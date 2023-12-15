@@ -1,0 +1,204 @@
+
+{% load static %}
+{% load menu_tags %}
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0"/>
+    <link rel="stylesheet" href="{% static 'shop/css/styles.css' %}"/>
+    <title>{% block title %}My shop{% endblock %}</title>
+    {% block extra_head %}{% endblock extra_head %}
+</head>
+<body>
+
+
+<nav class="navbar navbar-expand-lg bg-warning">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="{% url 'shop:product_list' %}">Virtual Card Store</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="{% url 'shop:product_list' %}">Home</a>
+                </li>
+
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                       aria-expanded="false">
+                        Categories
+                    </a>
+                    <ul class="dropdown-menu">
+                        {% get_categories as categories %}
+                        {% for c in categories %}
+                        <li
+                                {% if category.slug == c.slug %}
+                                class="selected"
+                                {%  endif  %}
+                        >
+                            <a class="dropdown-item" href="{{ c.get_absolute_url }}">{{ c.name }}</a>
+                        </li>
+                        {% endfor %}
+
+
+                    </ul>
+                </li>
+            </ul>
+
+            <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+
+
+                {% if user.is_authenticated %}
+                <li class="nav-item">
+                    <span class="nav-link active" aria-current="page" s> Hi {{ user.username }}!</span>
+
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="{% url 'logout' %}">logout</a>
+
+                </li>
+                {% else %}
+                <li class="nav-item dropdown">
+                    <span class="nav-link active dropdown-toggle " aria-current="page" role="button"
+                          data-bs-toggle="dropdown" aria-expanded="false">Unknown</span>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a class="nav-link active" aria-current="page" href="{% url 'login' %}">login</a>
+                        </li>
+                        <li>
+                            <a class="nav-link active" aria-current="page" href="{% url 'signup' %}">signup</a>
+                        </li>
+                    </ul>
+
+                </li>
+
+                {% endif %}
+                <li class="nav-item">
+                    {% with total_items=cart|length %}
+                    {% if cart|length > 0 %}
+                    <a class="nav-link active " aria-current="page" href="{% url 'cart:cart_detail' %}">
+                        {{ total_items }} item{{ total_items|pluralize }},
+                        {{ cart.get_total_price }} $
+                    </a>
+                    {% else %}
+
+                    <span class="nav-link active " aria-current="page">
+0 $
+</span>
+                    {% endif %}
+                    {% endwith %}
+                </li>
+
+            </ul>
+
+
+        </div>
+</nav>
+
+<div id="carouselExampleCaptions" class="carousel slide">
+    <div class="carousel-indicators">
+        <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active"
+                aria-current="true" aria-label="Slide 1"></button>
+        <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1"
+                aria-label="Slide 2"></button>
+        <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2"
+                aria-label="Slide 3"></button>
+    </div>
+    <div class="carousel-inner">
+        <div class="carousel-item active">
+            <img src="{% static 'shop/img/netflix_carusel.jpg' %}" class="d-block w-100" alt="...">
+            <div class="carousel-caption d-none d-md-block">
+                <h5 class="slider-text-top">Netflix Gift Cards</h5>
+                <p class="slider-text-bottom">Access unlimited Netflix with one card.</p>
+            </div>
+        </div>
+        <div class="carousel-item">
+            <img src="{% static 'shop/img/DisneyPlus.jpg' %}" class="d-block w-100" alt="...">
+            <div class="carousel-caption d-none d-md-block">
+                <h5 class="slider-text-top">Disney TV Prepaid card</h5>
+                <p class="slider-text-bottom">Access unlimited Netflix with one card</p>
+            </div>
+        </div>
+        <div class="carousel-item">
+            <img src="{% static 'shop/img/appletv_carusel.jpg' %}" class="d-block w-100" alt="...">
+            <div class="carousel-caption d-none d-md-block">
+                <h5 class="slider-text-top">Apple TV Prepaid card</h5>
+                <p class="slider-text-bottom">Access unlimited Netflix with one card</p>
+            </div>
+        </div>
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+    </button>
+</div>
+
+
+<div id="subheader">
+
+
+</div>
+
+<div id="content" class="mt-2 mb-5">
+    <h2 class="text-center text-uppercase fs-2 ">Gift card shop</h2>
+    {% block content %}
+    {% endblock %}
+</div>
+<footer class=" bg-dark text-white  text-center pt-4 pb-4 my-md-0 pt-md-5   border-top  ">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4 text-start">
+
+
+            </div>
+            <div class="col-md-4 text-start ">
+                <h5>Conditions </h5>
+                <ul class="list-unstyled text-small  ">
+                    <li><a href="{% url 'shipping' %}" class="text-white ">Shiping</a></li>
+                    <li><a href="{% url 'payment_options' %}" class="text-white ">Payment options</a></li>
+                    <li><a href="{% url 'support' %}" class="text-white ">Support</a></li>
+                    <li><a href="{% url 'terms' %}" class="text-white ">Terms and conditions</a></li>
+                    <li><a href="{% url 'gdrp' %}" class="text-white ">GDPR</a></li>
+
+
+                </ul>
+
+            </div>
+            <div class="col-md-4 text-start">
+                <h5>Virtual Card Store </h5>
+                <ul class="list-unstyled text-small">
+                    <li> Digitek international sro</li>
+                    <li> Chudenická 1059/30,</li>
+                    <li> 10200 Prague</li>
+                    <li> Czech Republik</li>
+                    <li> tel: +420 608 240 060</li>
+
+
+                </ul>
+
+            </div>
+        </div>
+
+    </div>
+
+
+</footer>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+        crossorigin="anonymous"></script>
+</body>
+</html>
